@@ -24,10 +24,10 @@ pip install -r requirements.txt
 
 ```bash
 # With text-to-speech (will read out loud)
-python -m shitpost_reader.main "https://boards.4chan.org/pol/thread/527886348"
+python -m shitpost_reader.main "https://boards.4chan.org/pol/thread/000000000"
 
 # Without audio (just print to console)
-python -m shitpost_reader.main "https://boards.4chan.org/pol/thread/527886348" --no-tts
+python -m shitpost_reader.main "https://boards.4chan.org/pol/thread/000000000" --no-tts
 ```
 
 ### Customize Speech Settings
@@ -47,7 +47,7 @@ python -m shitpost_reader.main "URL" --rate 180 --volume 0.8
 
 ```
 2026-02-06 10:00:00,000 - __main__ - INFO - Starting ShitpostReader
-2026-02-06 10:00:00,001 - __main__ - INFO - Target URL: https://boards.4chan.org/pol/thread/527886348
+2026-02-06 10:00:00,001 - __main__ - INFO - Target URL: https://boards.4chan.org/pol/thread/000000000
 2026-02-06 10:00:00,002 - __main__ - INFO - Using scraper: 4chan (FourChanSpider)
 2026-02-06 10:00:00,100 - __main__ - INFO - Extracted: Original Post: Welcome to the thread...
 2026-02-06 10:00:00,150 - __main__ - INFO - Extracted: Reply 123456789: First reply here...
