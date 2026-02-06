@@ -3,6 +3,7 @@ Main entry point for ShitpostReader.
 """
 
 import argparse
+from email.mime import message
 import logging
 import sys
 import time
@@ -13,11 +14,7 @@ from .scraper_runner import ScraperRunner
 from .tts_service import TTSService
 
 # Set up logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+from .logger import logger
 
 
 def main():
@@ -52,6 +49,10 @@ def main():
         action='store_true',
         help='Disable text-to-speech output (just print messages)'
     )
+    parser.add_argument(
+        '--save',
+        help='Saves the spoken output to an mp3 file'
+    )
     
     args = parser.parse_args()
     
@@ -75,12 +76,18 @@ def main():
     # Initialize TTS service
     tts = None
     if not args.no_tts:
-        tts = TTSService(rate=args.rate, volume=args.volume)
+        tts = TTSService(rate=args.rate, volume=args.volume, save_to_file=args.save)
         tts.start()
+
+    def remove_urls(text: str) -> str:
+        """Remove URLs from the given text."""
+        import re
+        url_pattern = re.compile(r'https?://\S+|www\.\S+')
+        return url_pattern.sub(r'', text)
     
     # Define callback to handle messages
     def message_handler(message: str):
-        logger.info(f"Extracted: {message[:100]}...")
+        message = remove_urls(message.replace('\n', ' '))
         if tts:
             tts.speak(message)
         else:
@@ -101,10 +108,7 @@ def main():
         sys.exit(1)
     finally:
         if tts:
-            logger.info("Waiting for TTS to finish...")
-            # Give TTS time to finish speaking
-            time.sleep(2)
-            tts.stop()
+            tts.wait_until_done()
     
     logger.info("ShitpostReader finished")
 
