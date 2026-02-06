@@ -2,16 +2,16 @@
 Text-to-speech service using pyttsx3.
 """
 
+import time
 import pyttsx3
-from threading import Thread
 from queue import Queue, Empty
-import logging
 
-logger = logging.getLogger(__name__)
+# Set up logging
+from .logger import logger
 
 
 class TTSService:
-    """Text-to-speech service that runs in a background thread."""
+    """Text-to-speech service that runs in background."""
     
     def __init__(self, rate: int = 150, volume: float = 0.9):
         """
@@ -25,25 +25,24 @@ class TTSService:
         self.volume = volume
         self.queue = Queue()
         self.running = False
-        self.thread = None
+        self.is_speaking = False
+        self.engine = None
         
     def start(self):
-        """Start the TTS service in a background thread."""
-        if self.running:
-            logger.warning("TTS service is already running")
-            return
-        
-        self.running = True
-        self.thread = Thread(target=self._process_queue, daemon=True)
-        self.thread.start()
-        logger.info("TTS service started")
+        """Start the TTS service in background."""
+        try:
+            self.engine = pyttsx3.init()
+            self.engine.setProperty('rate', self.rate)
+            self.engine.setProperty('volume', self.volume)
+            self.running = True
+            logger.info("TTS service started")
+        except (RuntimeError, ImportError) as e:
+            logger.error(f"Failed to initialize TTS engine: {e}")
+            logger.error("TTS will not be available. Install espeak/espeak-ng on Linux or use --no-tts flag.")
     
     def stop(self):
         """Stop the TTS service."""
         self.running = False
-        self.queue.put(None)  # Signal to stop
-        if self.thread:
-            self.thread.join(timeout=5)
         logger.info("TTS service stopped")
     
     def speak(self, text: str):
@@ -53,47 +52,36 @@ class TTSService:
         Args:
             text: The text to speak.
         """
-        if not self.running:
-            logger.warning("TTS service is not running, starting it now")
-            self.start()
-        
         self.queue.put(text)
+    
+    def wait_until_done(self):
+        """
+        Wait until all queued speech is finished.
+        
+        Returns:
+            True if finished, False if timeout occurred.
+        """
+        self._process_queue()
+        return True
     
     def _process_queue(self):
         """Process the speech queue in the background."""
-        try:
-            engine = pyttsx3.init()
-            engine.setProperty('rate', self.rate)
-            engine.setProperty('volume', self.volume)
-        except (RuntimeError, ImportError) as e:
-            logger.error(f"Failed to initialize TTS engine: {e}")
-            logger.error("TTS will not be available. Install espeak/espeak-ng on Linux or use --no-tts flag.")
-            return
         
-        while self.running:
-            try:
-                text = self.queue.get(timeout=1)
-                if text is None:  # Stop signal
-                    break
-                
-                logger.info(f"Speaking: {text[:50]}...")
-                engine.say(text)
-                engine.runAndWait()
-                
-            except Empty:
-                # Timeout waiting for queue item, continue loop
-                continue
-            except RuntimeError as e:
-                logger.error(f"TTS engine error: {e}")
-                if not self.running:
-                    break
-            except Exception as e:
-                logger.error(f"Unexpected error in TTS service: {e}")
-                if not self.running:
-                    break
+        self.is_speaking = True
+        while not self.queue.empty():
+            text = self.queue.get()
+            logger.info(f"TTS speaking: {text[:100]}...")
+            self.engine.say(text)
+            
+        self.engine.startLoop(False)
+        while self.engine.isBusy():
+            time.sleep(0.1)
+            self.engine.iterate()
+        self.engine.endLoop()
+        self.is_speaking = False
         
         try:
-            engine.stop()
+            self.engine.stop()
         except Exception:
             pass  # Engine may already be stopped
-        logger.info("TTS service thread ended")
+        self.stop()

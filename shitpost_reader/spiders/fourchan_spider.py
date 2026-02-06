@@ -26,7 +26,7 @@ class FourChanSpider(BaseSpider):
             if op_message:
                 op_text = ' '.join(op_message).strip()
                 if op_text:
-                    self.handle_message(f"Original Post: {op_text}")
+                    self.handle_message(f"OP: {op_text}")
         
         # Extract all replies
         reply_posts = response.css('div.replyContainer')
@@ -39,6 +39,6 @@ class FourChanSpider(BaseSpider):
             if message_parts:
                 message_text = ' '.join(message_parts).strip()
                 if message_text:
-                    self.handle_message(f"Reply {post_num}: {message_text}")
+                    self.handle_message(f"{message_text}")
         
         self.logger.info(f"Finished parsing thread: {response.url}")
