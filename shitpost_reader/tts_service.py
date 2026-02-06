@@ -4,7 +4,7 @@ Text-to-speech service using pyttsx3.
 
 import time
 import pyttsx3
-from queue import Queue, Empty
+from queue import Queue
 
 # Set up logging
 from .logger import logger

@@ -3,9 +3,7 @@ Scraper runner to execute spiders with Scrapy.
 """
 
 from scrapy.crawler import CrawlerProcess
-from scrapy.utils.project import get_project_settings
 from typing import Callable
-import logging
 
 from .spiders.fourchan_spider import FourChanSpider, FourChanCatalogSpider
 

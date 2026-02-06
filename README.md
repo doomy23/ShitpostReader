@@ -34,6 +34,12 @@ python -m shitpost_reader.main "https://boards.4chan.org/pol/thread/000000000"
 
 # Or use the installed command
 shitpost-reader "https://boards.4chan.org/pol/thread/000000000"
+
+# Read threads from catalog
+shitpost-reader "https://boards.4chan.org/pol/catalog" --thread=10
+
+# Save TTS into MP3 in the `output/` directory
+shitpost-reader "https://boards.4chan.org/pol/catalog" --thread=10 --save=pol.mp3
 ```
 
 ### Command Line Options

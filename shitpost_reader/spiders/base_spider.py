@@ -15,7 +15,7 @@ class BaseSpider(scrapy.Spider):
     name = "base"
     threads = None
     
-    def __init__(self, url: str, callback: Optional[Callable] = None, threads: int = 100, *args, **kwargs):
+    def __init__(self, url: str, callback: Optional[Callable] = None, threads: int = 10, *args, **kwargs):
         """
         Initialize the spider.
         
