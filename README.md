@@ -6,6 +6,7 @@ A Python 3.11+ project that scrapes specific texts from websites and reads them 
 
 - 🕷️ Uses Scrapy to scrape content from supported websites
 - 🔊 Reads content out loud using pyttsx3
+- 💾 Saves the TTS output as MP3 file in `output` directory
 - 🧵 Supports scraping 4chan threads
 - 🎯 Extensible architecture with JSON-based scraper configuration
 - 🔄 Background TTS processing
@@ -62,6 +63,7 @@ python -m shitpost_reader.main "URL" --config path/to/scrapers.json
 
 Currently supported:
 - **4chan**: Thread URLs like `https://boards.4chan.org/[board]/thread/[id]`
+- **4chan catalogs**: Catalog URLs like `https://boards.4chan.org/[board]/catalog`
 
 ## Architecture
 
