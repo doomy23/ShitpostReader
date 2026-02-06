@@ -1,0 +1,10 @@
+{
+  "scrapers": [
+    {
+      "name": "4chan",
+      "url_pattern": "^https?://boards\\.4chan\\.org/[^/]+/thread/\\d+",
+      "scraper_class": "FourChanSpider",
+      "description": "Scraper for 4chan threads"
+    }
+  ]
+}
