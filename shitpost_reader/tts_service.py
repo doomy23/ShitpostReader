@@ -13,7 +13,7 @@ from .logger import logger
 class TTSService:
     """Text-to-speech service that runs in background."""
     
-    def __init__(self, rate: int = 150, volume: float = 0.9):
+    def __init__(self, rate: int = 150, volume: float = 0.9, save_to_file: str = None):
         """
         Initialize the TTS service.
         
@@ -27,6 +27,7 @@ class TTSService:
         self.running = False
         self.is_speaking = False
         self.engine = None
+        self.save_to_file = save_to_file
         
     def start(self):
         """Start the TTS service in background."""
@@ -67,18 +68,24 @@ class TTSService:
     def _process_queue(self):
         """Process the speech queue in the background."""
         
+        fulltext = ""
         self.is_speaking = True
         while not self.queue.empty():
             text = self.queue.get()
             logger.info(f"TTS speaking: {text[:100]}...")
             self.engine.say(text)
-            
+            fulltext += text + " "
+
         self.engine.startLoop(False)
         while self.engine.isBusy():
             time.sleep(0.1)
             self.engine.iterate()
         self.engine.endLoop()
         self.is_speaking = False
+
+        if self.save_to_file:
+            self.engine.save_to_file(fulltext, f"output/{self.save_to_file}")
+            self.engine.runAndWait()
         
         try:
             self.engine.stop()

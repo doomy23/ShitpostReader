@@ -49,6 +49,10 @@ def main():
         action='store_true',
         help='Disable text-to-speech output (just print messages)'
     )
+    parser.add_argument(
+        '--save',
+        help='Saves the spoken output to an mp3 file'
+    )
     
     args = parser.parse_args()
     
@@ -72,7 +76,7 @@ def main():
     # Initialize TTS service
     tts = None
     if not args.no_tts:
-        tts = TTSService(rate=args.rate, volume=args.volume)
+        tts = TTSService(rate=args.rate, volume=args.volume, save_to_file=args.save)
         tts.start()
 
     def remove_urls(text: str) -> str:
@@ -84,7 +88,6 @@ def main():
     # Define callback to handle messages
     def message_handler(message: str):
         message = remove_urls(message.replace('\n', ' '))
-        logger.info(f"Extracted: {message[:100]}...")
         if tts:
             tts.speak(message)
         else:

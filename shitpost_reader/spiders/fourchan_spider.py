@@ -26,7 +26,7 @@ class FourChanSpider(BaseSpider):
             if op_message:
                 op_text = ' '.join(op_message).strip()
                 if op_text:
-                    self.handle_message(f"OP: {op_text}")
+                    self.handle_message(f"{op_text}")
         
         # Extract all replies
         reply_posts = response.css('div.replyContainer')
