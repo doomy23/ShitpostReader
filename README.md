@@ -115,6 +115,17 @@ SPIDER_REGISTRY = {
 - Scrapy >= 2.11.0
 - pyttsx3 >= 2.90
 - requests >= 2.31.0
+- **System Dependencies:**
+  - On Linux: `espeak` or `espeak-ng` for text-to-speech
+    ```bash
+    # Ubuntu/Debian
+    sudo apt-get install espeak espeak-ng
+    
+    # Fedora
+    sudo dnf install espeak espeak-ng
+    ```
+  - On macOS: Uses native `nsss` engine (no additional install needed)
+  - On Windows: Uses native `sapi5` engine (no additional install needed)
 
 ## License
 

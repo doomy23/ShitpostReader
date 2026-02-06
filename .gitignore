@@ -68,9 +68,10 @@ instance/
 # Scrapy stuff:
 .scrapy
 
-# Test scripts (temporary)
+# Test and validation scripts (temporary)
 test_components.py
 demo_scraper.py
+validate_implementation.py
 
 # Sphinx documentation
 docs/_build/
