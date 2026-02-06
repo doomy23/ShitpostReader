@@ -25,7 +25,7 @@ class ScraperRunner:
         """Initialize the scraper runner."""
         self.process = None
     
-    def run(self, url: str, scraper_class: str, callback: Callable, threads: int = 10):
+    def run(self, url: str, scraper_class: str, callback: Callable, threads: int = 10, posts: int = float('inf')):
         """
         Run a scraper for the given URL.
         
@@ -34,6 +34,7 @@ class ScraperRunner:
             scraper_class: The name of the spider class to use.
             callback: Callback function to handle extracted messages.
             threads: Maximum number of threads to use for scraping.
+            posts: Maximum number of posts to read.
         """
         spider_class = SPIDER_REGISTRY.get(scraper_class)
         if not spider_class:
@@ -52,7 +53,7 @@ class ScraperRunner:
         self.process = CrawlerProcess(settings)
         
         # Add the spider to the process
-        self.process.crawl(spider_class, url=url, callback=callback, threads=threads)
+        self.process.crawl(spider_class, url=url, callback=callback, threads=threads, posts=posts)
         
         # Run the crawler
         logger.info(f"Starting scraper for URL: {url}")

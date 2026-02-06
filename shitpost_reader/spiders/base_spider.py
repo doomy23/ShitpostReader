@@ -14,8 +14,10 @@ class BaseSpider(scrapy.Spider):
     
     name = "base"
     threads = None
+    posts = None
+    count = 0
     
-    def __init__(self, url: str, callback: Optional[Callable] = None, threads: int = 10, *args, **kwargs):
+    def __init__(self, url: str, callback: Optional[Callable] = None, threads: int = 10, posts: int = float('inf'), *args, **kwargs):
         """
         Initialize the spider.
         
@@ -23,11 +25,13 @@ class BaseSpider(scrapy.Spider):
             url: The URL to scrape.
             callback: Optional callback function to handle extracted messages.
             threads: Maximum number of threads to use for scraping.
+            posts: Maximum number of posts to read.
         """
         super().__init__(*args, **kwargs)
         self.start_urls = [url]
         self.message_callback = callback
         self.threads = threads
+        self.posts = posts
     
     def parse(self, response):
         """Parse the response. To be implemented by subclasses."""
@@ -40,7 +44,11 @@ class BaseSpider(scrapy.Spider):
         Args:
             message: The extracted message text.
         """
+        if self.count >= self.posts:
+            self.crawler.engine.close_spider(self, reason='post_limit_reached')
+            return
         if self.message_callback:
             self.message_callback(message)
         else:
             logger.info(f"Message: {message}")
+        self.count += 1
