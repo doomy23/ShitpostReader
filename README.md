@@ -41,6 +41,9 @@ shitpost-reader "https://boards.4chan.org/pol/catalog" --threads=10
 
 # Save TTS into MP3 in the `output/` directory
 shitpost-reader "https://boards.4chan.org/pol/catalog" --threads=10 --save=pol.mp3
+
+# Limit the number of posts read to 100
+shitpost-reader "https://boards.4chan.org/pol/catalog" --threads=10 --posts=100
 ```
 
 ### Command Line Options
