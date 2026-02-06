@@ -7,14 +7,16 @@ from scrapy.utils.project import get_project_settings
 from typing import Callable
 import logging
 
-from .spiders.fourchan_spider import FourChanSpider
+from .spiders.fourchan_spider import FourChanSpider, FourChanCatalogSpider
 
-logger = logging.getLogger(__name__)
+# Set up logging
+from .logger import logger
 
 
 # Map of scraper class names to actual classes
 SPIDER_REGISTRY = {
     'FourChanSpider': FourChanSpider,
+    'FourChanCatalogSpider': FourChanCatalogSpider,
 }
 
 
@@ -25,7 +27,7 @@ class ScraperRunner:
         """Initialize the scraper runner."""
         self.process = None
     
-    def run(self, url: str, scraper_class: str, callback: Callable):
+    def run(self, url: str, scraper_class: str, callback: Callable, threads: int = 10):
         """
         Run a scraper for the given URL.
         
@@ -33,6 +35,7 @@ class ScraperRunner:
             url: The URL to scrape.
             scraper_class: The name of the spider class to use.
             callback: Callback function to handle extracted messages.
+            threads: Maximum number of threads to use for scraping.
         """
         spider_class = SPIDER_REGISTRY.get(scraper_class)
         if not spider_class:
@@ -51,7 +54,7 @@ class ScraperRunner:
         self.process = CrawlerProcess(settings)
         
         # Add the spider to the process
-        self.process.crawl(spider_class, url=url, callback=callback)
+        self.process.crawl(spider_class, url=url, callback=callback, threads=threads)
         
         # Run the crawler
         logger.info(f"Starting scraper for URL: {url}")
