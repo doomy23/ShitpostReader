@@ -5,6 +5,7 @@ Main entry point for ShitpostReader.
 import argparse
 import logging
 import sys
+import time
 from pathlib import Path
 
 from .url_matcher import URLMatcher
@@ -102,7 +103,6 @@ def main():
         if tts:
             logger.info("Waiting for TTS to finish...")
             # Give TTS time to finish speaking
-            import time
             time.sleep(2)
             tts.stop()
     

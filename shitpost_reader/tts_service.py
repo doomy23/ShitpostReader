@@ -4,7 +4,7 @@ Text-to-speech service using pyttsx3.
 
 import pyttsx3
 from threading import Thread
-from queue import Queue
+from queue import Queue, Empty
 import logging
 
 logger = logging.getLogger(__name__)
@@ -61,9 +61,14 @@ class TTSService:
     
     def _process_queue(self):
         """Process the speech queue in the background."""
-        engine = pyttsx3.init()
-        engine.setProperty('rate', self.rate)
-        engine.setProperty('volume', self.volume)
+        try:
+            engine = pyttsx3.init()
+            engine.setProperty('rate', self.rate)
+            engine.setProperty('volume', self.volume)
+        except (RuntimeError, ImportError) as e:
+            logger.error(f"Failed to initialize TTS engine: {e}")
+            logger.error("TTS will not be available. Install espeak/espeak-ng on Linux or use --no-tts flag.")
+            return
         
         while self.running:
             try:
@@ -75,9 +80,20 @@ class TTSService:
                 engine.say(text)
                 engine.runAndWait()
                 
+            except Empty:
+                # Timeout waiting for queue item, continue loop
+                continue
+            except RuntimeError as e:
+                logger.error(f"TTS engine error: {e}")
+                if not self.running:
+                    break
             except Exception as e:
-                if self.running:  # Only log if not shutting down
-                    logger.error(f"Error in TTS service: {e}")
+                logger.error(f"Unexpected error in TTS service: {e}")
+                if not self.running:
+                    break
         
-        engine.stop()
+        try:
+            engine.stop()
+        except Exception:
+            pass  # Engine may already be stopped
         logger.info("TTS service thread ended")
