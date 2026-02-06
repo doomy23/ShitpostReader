@@ -4,6 +4,7 @@ Main entry point for ShitpostReader.
 
 import argparse
 import sys
+import math
 
 from .url_matcher import URLMatcher
 from .scraper_runner import ScraperRunner
@@ -33,6 +34,12 @@ def main():
         type=int,
         default=10,
         help='Maximum number of threads to scrape concurrently (default: 10)'
+    )
+    parser.add_argument(
+        '--posts',
+        type=int,
+        default=math.inf,
+        help='Maximum number of posts to read (default: unlimited)'
     )
     parser.add_argument(
         '--volume',
@@ -102,7 +109,8 @@ def main():
             url=args.url,
             scraper_class=match['scraper_class'],
             callback=message_handler,
-            threads=args.threads
+            threads=args.threads,
+            posts=args.posts
         )
     except KeyboardInterrupt:
         logger.info("Interrupted by user")
