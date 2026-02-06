@@ -25,7 +25,7 @@ def example_basic_usage():
     print("=" * 70)
     
     # The URL to scrape
-    url = "https://boards.4chan.org/pol/thread/527886348"
+    url = "https://boards.4chan.org/pol/thread/000000000"
     
     # Match the URL to a scraper
     matcher = URLMatcher()
@@ -59,7 +59,7 @@ def example_with_tts():
     print("\nExample 2: Scraping with Text-to-Speech")
     print("=" * 70)
     
-    url = "https://boards.4chan.org/pol/thread/527886348"
+    url = "https://boards.4chan.org/pol/thread/000000000"
     
     # Initialize TTS service
     tts = TTSService(rate=175, volume=0.8)

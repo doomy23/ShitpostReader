@@ -27,7 +27,7 @@ def main():
     )
     parser.add_argument(
         'url',
-        help='URL to scrape (e.g., https://boards.4chan.org/pol/thread/527886348)'
+        help='URL to scrape (e.g., https://boards.4chan.org/pol/thread/000000000)'
     )
     parser.add_argument(
         '--rate',

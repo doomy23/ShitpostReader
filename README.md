@@ -30,10 +30,10 @@ pip install -e .
 
 ```bash
 # Scrape and read a 4chan thread
-python -m shitpost_reader.main "https://boards.4chan.org/pol/thread/527886348"
+python -m shitpost_reader.main "https://boards.4chan.org/pol/thread/000000000"
 
 # Or use the installed command
-shitpost-reader "https://boards.4chan.org/pol/thread/527886348"
+shitpost-reader "https://boards.4chan.org/pol/thread/000000000"
 ```
 
 ### Command Line Options
