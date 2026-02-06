@@ -5,6 +5,12 @@
       "url_pattern": "^https?://boards\\.4chan\\.org/[^/]+/thread/\\d+",
       "scraper_class": "FourChanSpider",
       "description": "Scraper for 4chan threads"
+    },
+    {
+      "name": "4chan Catalog",
+      "url_pattern": "^https?://boards\\.4chan\\.org/[^/]+/catalog/?$",
+      "scraper_class": "FourChanCatalogSpider",
+      "description": "Scraper for 4chan catalogs"
     }
   ]
 }

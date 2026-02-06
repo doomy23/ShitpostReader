@@ -5,23 +5,29 @@ Base spider class for ShitpostReader.
 import scrapy
 from typing import Optional, Callable
 
+# Set up logging
+from shitpost_reader.logger import logger
+
 
 class BaseSpider(scrapy.Spider):
     """Base spider class for all ShitpostReader spiders."""
     
     name = "base"
+    threads = None
     
-    def __init__(self, url: str, callback: Optional[Callable] = None, *args, **kwargs):
+    def __init__(self, url: str, callback: Optional[Callable] = None, threads: int = 100, *args, **kwargs):
         """
         Initialize the spider.
         
         Args:
             url: The URL to scrape.
             callback: Optional callback function to handle extracted messages.
+            threads: Maximum number of threads to use for scraping.
         """
         super().__init__(*args, **kwargs)
         self.start_urls = [url]
         self.message_callback = callback
+        self.threads = threads
     
     def parse(self, response):
         """Parse the response. To be implemented by subclasses."""
@@ -37,4 +43,4 @@ class BaseSpider(scrapy.Spider):
         if self.message_callback:
             self.message_callback(message)
         else:
-            self.logger.info(f"Message: {message}")
+            logger.info(f"Message: {message}")

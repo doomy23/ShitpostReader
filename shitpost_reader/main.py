@@ -3,11 +3,7 @@ Main entry point for ShitpostReader.
 """
 
 import argparse
-from email.mime import message
-import logging
 import sys
-import time
-from pathlib import Path
 
 from .url_matcher import URLMatcher
 from .scraper_runner import ScraperRunner
@@ -31,6 +27,12 @@ def main():
         type=int,
         default=150,
         help='Speech rate in words per minute (default: 150)'
+    )
+    parser.add_argument(
+        '--threads',
+        type=int,
+        default=10,
+        help='Maximum number of threads to scrape concurrently (default: 10)'
     )
     parser.add_argument(
         '--volume',
@@ -99,7 +101,8 @@ def main():
         runner.run(
             url=args.url,
             scraper_class=match['scraper_class'],
-            callback=message_handler
+            callback=message_handler,
+            threads=args.threads
         )
     except KeyboardInterrupt:
         logger.info("Interrupted by user")
